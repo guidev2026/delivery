@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Insumo {
+  id               Int           @id @default(autoincrement())
+  nome             String
+  unidadeMedida    String        @map("unidade_medida")
+  quantidadeEstoque Float         @map("quantidade_estoque") @default(0)
+  createdAt        DateTime      @default(now()) @map("created_at")
+  updatedAt        DateTime      @updatedAt @map("updated_at")
+  pratoInsumos     PratoInsumo[]
+
+  @@map("insumos")
+}
+
+model Prato {
+  id         Int           @id @default(autoincrement())
+  nome       String
+  preco      Float
+  createdAt  DateTime      @default(now()) @map("created_at")
+  updatedAt  DateTime      @updatedAt @map("updated_at")
+  insumos    PratoInsumo[]
+  vendas     Venda[]
+
+  @@map("pratos")
+}
+
+model PratoInsumo {
+  id             Int     @id @default(autoincrement())
+  pratoId        Int     @map("prato_id")
+  insumoId       Int     @map("insumo_id")
+  quantidadeUsada Float  @map("quantidade_usada")
+  prato          Prato   @relation(fields: [pratoId], references: [id], onDelete: Cascade)
+  insumo         Insumo  @relation(fields: [insumoId], references: [id], onDelete: Restrict)
+
+  @@map("prato_insumos")
+}
+
+model Venda {
+  id         Int      @id @default(autoincrement())
+  pratoId    Int      @map("prato_id")
+  quantidade Int
+  total      Float
+  createdAt  DateTime @default(now()) @map("created_at")
+  prato      Prato    @relation(fields: [pratoId], references: [id])
+
+  @@map("vendas")
+}
