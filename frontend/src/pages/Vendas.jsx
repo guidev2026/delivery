@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import ToastMessage from '../components/ToastMessage';
 
 const API_PRATOS = 'http://localhost:3001/pratos';
 const API_VENDAS = 'http://localhost:3001/vendas';
@@ -9,9 +10,15 @@ export default function Vendas() {
   const [pratoId, setPratoId] = useState('');
   const [quantidade, setQuantidade] = useState(1);
   const [filtroData, setFiltroData] = useState('');
-  const [erro, setErro] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [toast, setToast] = useState(null);
 
   useEffect(() => { listarPratos(); listarVendas(); }, []);
+
+  function showToast(message, type = 'success') {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  }
 
   async function listarPratos() {
     const res = await fetch(API_PRATOS);
@@ -28,7 +35,8 @@ export default function Vendas() {
 
   async function registrar(e) {
     e.preventDefault();
-    setErro('');
+    setToast(null);
+    setLoading(true);
     try {
       const res = await fetch(API_VENDAS, {
         method: 'POST',
@@ -37,75 +45,124 @@ export default function Vendas() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setErro(data.error);
+        showToast(data.error, 'error');
         return;
       }
       setPratoId('');
       setQuantidade(1);
+      showToast('Venda registrada!');
       listarVendas();
     } catch {
-      setErro('Erro ao registrar venda');
+      showToast('Erro ao registrar venda', 'error');
+    } finally {
+      setLoading(false);
     }
   }
 
-  return (
-    <div>
-      <h2 className="text-lg font-semibold mb-4">Registrar Venda</h2>
+  const totalDia = vendas.reduce((acc, v) => acc + v.total, 0);
 
-      <form onSubmit={registrar} className="bg-white p-4 rounded-lg shadow mb-6 flex gap-3 flex-wrap items-end">
-        <div>
-          <label className="block text-sm text-gray-600">Prato</label>
-          <select className="border rounded px-3 py-2 w-48" value={pratoId} onChange={(e) => setPratoId(e.target.value)} required>
-            <option value="">Selecione...</option>
-            {pratos.map((p) => (
-              <option key={p.id} value={p.id}>{p.nome} — R$ {p.preco.toFixed(2)}</option>
-            ))}
-          </select>
+  return (
+    <>
+      {/* Total do dia card */}
+      <div className="bg-surface-800 border border-surface-700 border-l-4 border-l-amber-accent rounded-xl p-6 mb-6">
+        <p className="text-xs uppercase tracking-widest text-surface-500 font-medium">Total do Dia</p>
+        <p className="text-4xl font-heading font-bold text-amber-accent mt-1">
+          R$ {totalDia.toFixed(2)}
+        </p>
+      </div>
+
+      <form onSubmit={registrar} className="bg-surface-800 border border-surface-700 rounded-xl p-6 mb-6">
+        <h3 className="text-sm font-heading font-semibold text-surface-300 mb-4">Registrar Nova Venda</h3>
+        <div className="flex gap-4 flex-wrap items-end">
+          <div className="flex-1 min-w-[200px]">
+            <label className="text-xs uppercase tracking-widest text-surface-500 font-medium block mb-1.5">Prato</label>
+            <select
+              className="w-full bg-surface-900 border border-surface-600 rounded-lg px-3 py-2.5 text-surface-200 text-sm focus:outline-none focus:ring-2 focus:ring-amber-accent/40 focus:border-amber-accent transition-all duration-200"
+              value={pratoId}
+              onChange={(e) => setPratoId(e.target.value)}
+              required
+            >
+              <option value="" className="bg-surface-900">Selecione...</option>
+              {pratos.map((p) => (
+                <option key={p.id} value={p.id} className="bg-surface-900">🍽️ {p.nome} — R$ {p.preco.toFixed(2)}</option>
+              ))}
+            </select>
+          </div>
+          <div className="w-24">
+            <label className="text-xs uppercase tracking-widest text-surface-500 font-medium block mb-1.5">Quantidade</label>
+            <input
+              className="w-full bg-surface-900 border border-surface-600 rounded-lg px-3 py-2.5 text-surface-200 text-sm placeholder-surface-500 focus:outline-none focus:ring-2 focus:ring-amber-accent/40 focus:border-amber-accent transition-all duration-200"
+              type="number"
+              min="1"
+              value={quantidade}
+              onChange={(e) => setQuantidade(e.target.value)}
+              required
+            />
+          </div>
+          <div className="pb-0.5">
+            <button
+              className="bg-amber-accent hover:bg-amber-accent-hover text-surface-900 font-semibold px-6 py-2.5 rounded-lg text-sm transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
+              disabled={loading}
+            >
+              {loading ? 'Vendendo...' : 'Vender'}
+            </button>
+          </div>
         </div>
-        <div>
-          <label className="block text-sm text-gray-600">Quantidade</label>
-          <input className="border rounded px-3 py-2 w-20" type="number" min="1" value={quantidade} onChange={(e) => setQuantidade(e.target.value)} required />
-        </div>
-        <button className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Vender</button>
-        {erro && <p className="text-red-600 text-sm w-full">{erro}</p>}
       </form>
 
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold">Histórico de Vendas</h3>
-        <div className="flex items-center gap-2">
-          <label className="text-sm text-gray-600">Filtrar por data:</label>
-          <input className="border rounded px-3 py-1.5 text-sm" type="date" value={filtroData} onChange={(e) => setFiltroData(e.target.value)} />
-          {filtroData && (
-            <button className="text-sm text-gray-500 hover:underline" onClick={() => setFiltroData('')}>Limpar</button>
-          )}
+      <div className="bg-surface-800 border border-surface-700 rounded-xl p-5 mb-6">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-heading font-semibold text-surface-300">Histórico de Vendas</h3>
+          <div className="flex items-center gap-2">
+            <label className="text-xs uppercase tracking-widest text-surface-500 font-medium">Filtrar data:</label>
+            <input
+              className="bg-surface-900 border border-surface-600 rounded-lg px-3 py-1.5 text-surface-200 text-sm focus:outline-none focus:ring-2 focus:ring-amber-accent/40 focus:border-amber-accent transition-all duration-200"
+              type="date"
+              value={filtroData}
+              onChange={(e) => setFiltroData(e.target.value)}
+            />
+            {filtroData && (
+              <button className="text-xs text-surface-500 hover:text-surface-300 font-medium transition-colors duration-200" onClick={() => setFiltroData('')}>
+                Limpar
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="bg-surface-800 border border-surface-700 rounded-xl overflow-hidden">
         <table className="w-full text-left">
-          <thead className="bg-gray-50 text-sm text-gray-600">
-            <tr>
-              <th className="p-3">Prato</th>
-              <th className="p-3">Qtd</th>
-              <th className="p-3">Total</th>
-              <th className="p-3">Data</th>
+          <thead>
+            <tr className="bg-surface-700/60">
+              <th className="px-5 py-3.5 text-xs uppercase tracking-widest text-surface-400 font-semibold">Prato</th>
+              <th className="px-5 py-3.5 text-xs uppercase tracking-widest text-surface-400 font-semibold">Qtd</th>
+              <th className="px-5 py-3.5 text-xs uppercase tracking-widest text-surface-400 font-semibold">Total</th>
+              <th className="px-5 py-3.5 text-xs uppercase tracking-widest text-surface-400 font-semibold">Data</th>
             </tr>
           </thead>
           <tbody>
             {vendas.map((v) => (
-              <tr key={v.id} className="border-t">
-                <td className="p-3">{v.prato.nome}</td>
-                <td className="p-3">{v.quantidade}</td>
-                <td className="p-3 font-medium">R$ {v.total.toFixed(2)}</td>
-                <td className="p-3 text-sm text-gray-500">{new Date(v.createdAt).toLocaleString('pt-BR')}</td>
+              <tr key={v.id} className="border-t border-surface-700 hover:bg-surface-700/40 transition-colors duration-150">
+                <td className="px-5 py-3.5 text-surface-200 text-sm">{v.prato.nome}</td>
+                <td className="px-5 py-3.5 text-surface-400 text-sm">{v.quantidade}</td>
+                <td className="px-5 py-3.5 text-amber-accent font-semibold text-sm">R$ {v.total.toFixed(2)}</td>
+                <td className="px-5 py-3.5 text-surface-500 text-sm">{new Date(v.createdAt).toLocaleString('pt-BR')}</td>
               </tr>
             ))}
             {vendas.length === 0 && (
-              <tr><td colSpan="4" className="p-3 text-center text-gray-400">Nenhuma venda registrada</td></tr>
+              <tr>
+                <td colSpan="4" className="px-5 py-10 text-center text-surface-500 text-sm">Nenhuma venda registrada</td>
+              </tr>
             )}
           </tbody>
         </table>
       </div>
-    </div>
+
+      <ToastMessage
+        message={toast?.message}
+        type={toast?.type}
+        onClose={() => setToast(null)}
+      />
+    </>
   );
 }

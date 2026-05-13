@@ -10,8 +10,8 @@ router.get('/', async (req, res) => {
     const where = data
       ? {
           createdAt: {
-            gte: new Date(`${data}T00:00:00.000Z`),
-            lt: new Date(`${data}T23:59:59.999Z`),
+            gte: new Date(`${data}T00:00:00.000-03:00`),
+            lt: new Date(`${data}T23:59:59.999-03:00`),
           },
         }
       : {};
