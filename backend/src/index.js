@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
 import { createClient } from '@libsql/client';
-import { PrismaLibSQL } from '@prisma/adapter-libsql';
+import { PrismaLibSql } from '@prisma/adapter-libsql';
 
 import insumosRouter from './routes/insumos.js';
 import pratosRouter from './routes/pratos.js';
