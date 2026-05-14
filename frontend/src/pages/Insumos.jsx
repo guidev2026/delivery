@@ -3,7 +3,7 @@ import ToastMessage from '../components/ToastMessage';
 
 //const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 //const API = `${API_BASE}/insumos`;
-const API_BASE = 'https://delivery-09hd.onrender.com/insumos';
+const API_BASE = 'https://delivery-09hd.onrender.com';
 
 export default function Insumos() {
   const [insumos, setInsumos] = useState([]);

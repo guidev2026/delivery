@@ -6,8 +6,7 @@ import ToastMessage from '../components/ToastMessage';
 
 //const API_PRATOS = `${API_BASE}/pratos`;
 //const API_VENDAS = `${API_BASE}/vendas`;
-const API_BASE = 'https://delivery-09hd.onrender.com/pratos';
-const API_BASE = 'https://delivery-09hd.onrender.com/vendas';
+const API_BASE = 'https://delivery-09hd.onrender.com';
 
 export default function Vendas() {
   const [pratos, setPratos] = useState([]);
