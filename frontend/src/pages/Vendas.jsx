@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
 import ToastMessage from '../components/ToastMessage';
 
-const API_PRATOS = 'http://localhost:3001/pratos';
-const API_VENDAS = 'http://localhost:3001/vendas';
+// Pega a URL da Vercel ou usa o localhost se estiver rodando no seu PC
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+
+const API_PRATOS = `${API_BASE}/pratos`;
+const API_VENDAS = `${API_BASE}/vendas`;
 
 export default function Vendas() {
   const [pratos, setPratos] = useState([]);

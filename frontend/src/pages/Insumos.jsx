@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import ToastMessage from '../components/ToastMessage';
 
-const API = 'http://localhost:3001/insumos';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+const API = `${API_BASE}/insumos`;
 
 export default function Insumos() {
   const [insumos, setInsumos] = useState([]);
