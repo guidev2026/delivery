@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 3001;
 app.use(cors({
   // Adicione a URL da sua Vercel e o localhost para testes
   origin: [
-    'https://seu-projeto.vercel.app', 
+    'https://delivery-eta-coral.vercel.app/', 
     'http://localhost:5173', // Porta padrão do Vite
     'http://localhost:3000'  // Porta padrão do React/Next
   ],
