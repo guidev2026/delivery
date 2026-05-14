@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react';
 import ToastMessage from '../components/ToastMessage';
 
 // Pega a URL base da variável de ambiente (Vercel) ou usa o localhost como fallback
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+//const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
-const API_INSUMOS = `${API_BASE}/insumos`;
-const API_PRATOS = `${API_BASE}/pratos`;
+//const API_INSUMOS = `${API_BASE}/insumos`;
+//const API_PRATOS = `${API_BASE}/pratos`;
+const API_BASE = 'https://delivery-09hd.onrender.com/insumos';
+const API_BASE = 'https://delivery-09hd.onrender.com/pratos';
 
 export default function Pratos() {
   const [pratos, setPratos] = useState([]);

@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react';
 import ToastMessage from '../components/ToastMessage';
 
 // Pega a URL da Vercel ou usa o localhost se estiver rodando no seu PC
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+//const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
-const API_PRATOS = `${API_BASE}/pratos`;
-const API_VENDAS = `${API_BASE}/vendas`;
+//const API_PRATOS = `${API_BASE}/pratos`;
+//const API_VENDAS = `${API_BASE}/vendas`;
+const API_BASE = 'https://delivery-09hd.onrender.com/pratos';
+const API_BASE = 'https://delivery-09hd.onrender.com/vendas';
 
 export default function Vendas() {
   const [pratos, setPratos] = useState([]);
