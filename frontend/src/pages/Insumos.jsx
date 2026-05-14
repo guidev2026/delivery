@@ -63,10 +63,15 @@ export default function Insumos() {
 
   return (
     <>
+      {/* Formulário */}
       <form onSubmit={salvar} className="bg-surface-800 border border-surface-700 rounded-xl p-6 mb-6">
+        <h3 className="text-sm font-heading font-semibold text-surface-200 mb-4 flex items-center gap-2">
+          <span className="w-1 h-4 bg-amber-accent rounded-full" />
+          {editando ? 'Editar Insumo' : 'Novo Insumo'}
+        </h3>
         <div className="flex gap-4 flex-wrap items-end">
-          <div className="flex-1 min-w-[140px]">
-            <label className="text-xs uppercase tracking-widest text-surface-500 font-medium block mb-1.5">Nome</label>
+          <div className="flex-1 min-w-[160px]">
+            <label className="text-xs uppercase tracking-widest text-surface-400 font-semibold block mb-1.5">Nome</label>
             <input
               className="w-full bg-surface-900 border border-surface-600 rounded-lg px-3 py-2.5 text-surface-200 text-sm placeholder-surface-500 focus:outline-none focus:ring-2 focus:ring-amber-accent/40 focus:border-amber-accent transition-all duration-200"
               value={form.nome}
@@ -76,7 +81,7 @@ export default function Insumos() {
             />
           </div>
           <div className="w-28">
-            <label className="text-xs uppercase tracking-widest text-surface-500 font-medium block mb-1.5">Unidade</label>
+            <label className="text-xs uppercase tracking-widest text-surface-400 font-semibold block mb-1.5">Unidade</label>
             <input
               className="w-full bg-surface-900 border border-surface-600 rounded-lg px-3 py-2.5 text-surface-200 text-sm placeholder-surface-500 focus:outline-none focus:ring-2 focus:ring-amber-accent/40 focus:border-amber-accent transition-all duration-200"
               value={form.unidadeMedida}
@@ -86,7 +91,7 @@ export default function Insumos() {
             />
           </div>
           <div className="w-28">
-            <label className="text-xs uppercase tracking-widest text-surface-500 font-medium block mb-1.5">Estoque</label>
+            <label className="text-xs uppercase tracking-widest text-surface-400 font-semibold block mb-1.5">Estoque</label>
             <input
               className="w-full bg-surface-900 border border-surface-600 rounded-lg px-3 py-2.5 text-surface-200 text-sm placeholder-surface-500 focus:outline-none focus:ring-2 focus:ring-amber-accent/40 focus:border-amber-accent transition-all duration-200"
               type="number"
@@ -99,15 +104,23 @@ export default function Insumos() {
           </div>
           <div className="flex items-center gap-2 pb-0.5">
             <button
-              className="bg-amber-accent hover:bg-amber-accent-hover text-surface-900 font-semibold px-5 py-2.5 rounded-lg text-sm transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="bg-amber-accent hover:bg-amber-accent-hover text-surface-900 font-semibold px-5 py-2.5 rounded-lg text-sm transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-amber-accent/20"
               disabled={loading}
             >
-              {loading ? 'Salvando...' : (editando ? 'Atualizar' : 'Adicionar')}
+              {loading ? (
+                <span className="flex items-center gap-2">
+                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                  Salvando...
+                </span>
+              ) : (editando ? 'Atualizar' : 'Adicionar')}
             </button>
             {editando && (
               <button
                 type="button"
-                className="text-surface-500 hover:text-surface-300 text-sm px-3 py-2.5 rounded-lg transition-colors duration-200"
+                className="text-surface-400 hover:text-surface-200 text-sm px-3 py-2.5 rounded-lg transition-colors duration-200 bg-surface-750 hover:bg-surface-700 border border-surface-600"
                 onClick={() => { setEditando(null); setForm({ nome: '', unidadeMedida: '', quantidadeEstoque: '' }); }}
               >
                 Cancelar
@@ -117,39 +130,43 @@ export default function Insumos() {
         </div>
       </form>
 
+      {/* Tabela */}
       <div className="bg-surface-800 border border-surface-700 rounded-xl overflow-hidden">
-        <table className="w-full text-left">
-          <thead>
-            <tr className="bg-surface-700/60">
-              <th className="px-5 py-3.5 text-xs uppercase tracking-widest text-surface-400 font-semibold">Nome</th>
-              <th className="px-5 py-3.5 text-xs uppercase tracking-widest text-surface-400 font-semibold">Unidade</th>
-              <th className="px-5 py-3.5 text-xs uppercase tracking-widest text-surface-400 font-semibold">Estoque</th>
-              <th className="px-5 py-3.5 text-xs uppercase tracking-widest text-surface-400 font-semibold text-right">Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {insumos.map((i, idx) => (
-              <tr key={i.id} className="border-t border-surface-700 hover:bg-surface-700/40 transition-colors duration-150">
-                <td className="px-5 py-3.5 text-surface-200 text-sm">{i.nome}</td>
-                <td className="px-5 py-3.5 text-surface-400 text-sm">{i.unidadeMedida}</td>
-                <td className="px-5 py-3.5 text-surface-200 text-sm font-medium">{i.quantidadeEstoque}</td>
-                <td className="px-5 py-3.5 text-right">
-                  <button onClick={() => editar(i)} className="text-amber-accent hover:text-amber-accent-light text-sm font-medium transition-colors duration-200 mr-3">
-                    Editar
-                  </button>
-                  <button onClick={() => deletar(i.id)} className="text-destructive hover:text-destructive-hover text-sm font-medium transition-colors duration-200">
-                    Deletar
-                  </button>
-                </td>
+        {insumos.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-16 px-5">
+            <span className="text-4xl mb-3 opacity-50">📦</span>
+            <p className="text-surface-400 text-sm">Nenhum insumo cadastrado</p>
+            <p className="text-surface-500 text-xs mt-1">Cadastre insumos para começar a controlar o estoque</p>
+          </div>
+        ) : (
+          <table className="w-full text-left">
+            <thead>
+              <tr className="bg-surface-750/80">
+                <th className="px-5 py-4 text-xs uppercase tracking-widest text-surface-400 font-semibold">Nome</th>
+                <th className="px-5 py-4 text-xs uppercase tracking-widest text-surface-400 font-semibold">Unidade</th>
+                <th className="px-5 py-4 text-xs uppercase tracking-widest text-surface-400 font-semibold">Estoque</th>
+                <th className="px-5 py-4 text-xs uppercase tracking-widest text-surface-400 font-semibold text-right">Ações</th>
               </tr>
-            ))}
-            {insumos.length === 0 && (
-              <tr>
-                <td colSpan="4" className="px-5 py-10 text-center text-surface-500 text-sm">Nenhum insumo cadastrado</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {insumos.map((i, idx) => (
+                <tr key={i.id} className="border-t border-surface-700 hover:bg-amber-accent-subtle/40 transition-colors duration-150 animate-fade-in-up" style={{ animationDelay: `${idx * 30}ms` }}>
+                  <td className="px-5 py-4 text-surface-200 text-sm font-medium">{i.nome}</td>
+                  <td className="px-5 py-4 text-surface-300 text-sm">{i.unidadeMedida}</td>
+                  <td className="px-5 py-4 text-surface-200 text-sm font-semibold">{i.quantidadeEstoque}</td>
+                  <td className="px-5 py-4 text-right">
+                    <button onClick={() => editar(i)} className="text-amber-accent hover:text-amber-accent-light text-sm font-medium transition-colors duration-200 mr-3 bg-amber-accent-subtle px-3 py-1 rounded-lg hover:bg-amber-accent/20">
+                      Editar
+                    </button>
+                    <button onClick={() => deletar(i.id)} className="text-destructive hover:text-destructive-hover text-sm font-medium transition-colors duration-200 bg-destructive-subtle px-3 py-1 rounded-lg hover:bg-destructive/20">
+                      Deletar
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
 
       <ToastMessage

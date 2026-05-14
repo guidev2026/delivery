@@ -1,22 +1,36 @@
 @import "tailwindcss";
 
 @theme {
+  --color-surface-950: #141210;
   --color-surface-900: #1c1917;
   --color-surface-800: #292524;
+  --color-surface-750: #322f2d;
   --color-surface-700: #3a3532;
   --color-surface-600: #4a4542;
   --color-surface-500: #5a5552;
+  --color-surface-400: #7a7572;
+  --color-surface-300: #a5a19e;
+  --color-surface-200: #d1cdca;
+  --color-surface-100: #e8e5e2;
   --color-amber-accent: #f59e0b;
   --color-amber-accent-hover: #d97706;
   --color-amber-accent-light: #fbbf24;
+  --color-amber-accent-subtle: rgba(245, 158, 11, 0.1);
   --color-destructive: #ef4444;
   --color-destructive-hover: #dc2626;
+  --color-destructive-subtle: rgba(239, 68, 68, 0.12);
   --color-success: #22c55e;
   --color-success-bg: rgba(34, 197, 94, 0.12);
   --color-error: #ef4444;
   --color-error-bg: rgba(239, 68, 68, 0.12);
   --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
   --font-heading: "Syne", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Base body background gradient */
+body {
+  background: linear-gradient(135deg, var(--color-surface-950) 0%, var(--color-surface-900) 100%);
+  min-height: 100vh;
 }
 
 /* Scrollbar styling */
@@ -31,7 +45,7 @@
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-surface-500);
+  background: var(--color-surface-400);
 }
 
 /* Animations */
@@ -60,4 +74,28 @@
 }
 .animate-toast-out {
   animation: toast-out 0.3s ease-in forwards;
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-in-up {
+  animation: fade-in-up 0.3s ease-out forwards;
+}
+
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Smooth transitions for all interactive elements */
+input, select, button, textarea, a {
+  transition: all 0.2s ease;
 }
