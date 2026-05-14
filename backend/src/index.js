@@ -29,7 +29,8 @@ app.use(cors({
   origin: [
     process.env.FRONTEND_URL,
     'http://localhost:5173', // Porta padrão do Vite
-    'http://localhost:3000'  // Porta padrão do React/Next
+    'http://localhost:3000',
+    'https://vaidmassas.vercel.app'  // Porta padrão do React/Next
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
