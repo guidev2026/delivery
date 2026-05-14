@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
 import { createClient } from '@libsql/client';
-import { PrismaLibSql } from '@prisma/adapter-libsql'; // Importação corrigida
+import { PrismaLibSQL } from '@prisma/adapter-libsql'; // Importação corrigida
 
 import insumosRouter from './routes/insumos.js';
 import pratosRouter from './routes/pratos.js';
@@ -15,7 +15,7 @@ const libsql = createClient({
 });
 
 // AQUI ESTAVA O ERRO RESTANTE: Agora está instanciando com a nomenclatura correta
-const adapter = new PrismaLibSql(libsql); 
+const adapter = new PrismaLibSQL(libsql);
 
 // Exporta o prisma usando o adaptador em vez do cliente padrão
 export const prisma = new PrismaClient({ adapter });
